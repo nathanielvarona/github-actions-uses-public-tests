@@ -41,7 +41,8 @@ jobs:
           vpn-mode: ${{ matrix.vpn }}
           client-version: ${{ matrix.client-version }}
           start-connection: ${{ matrix.start-connection }}
-          established-connection-timeout: '35'
+          ready-profile-timeout: 5
+          established-connection-timeout: 15
 
       - name: Starting a VPN Connection Manually
         if: ${{ matrix.start-connection == 'false' }}
@@ -55,7 +56,7 @@ jobs:
       - name: Show VPN Connection Status Manually
         if: ${{ matrix.start-connection == 'false' }}
         env:
-          PRITUNL_ESTABLISHED_CONNECTION_TIMEOUT: 40
+          PRITUNL_ESTABLISHED_CONNECTION_TIMEOUT: 20
         shell: bash
         run: |
           # Function to print a progress bar
