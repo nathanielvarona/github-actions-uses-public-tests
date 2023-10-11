@@ -37,7 +37,7 @@ jobs:
 
       - name: Setup Pritunl Profile
         id: pritunl-connection
-        uses: nathanielvarona/pritunl-client-github-action@feature-pritunl-client-inputs-and-friendly-environment-variables
+        uses: nathanielvarona/pritunl-client-github-action@main
         with:
           profile-file: ${{ secrets.PRITUNL_PROFILE_FILE }}
           profile-pin: ${{ secrets.PRITUNL_PROFILE_PIN }}
