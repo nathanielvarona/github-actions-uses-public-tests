@@ -28,16 +28,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: "run:${{ matrix.os }}, vpn:${{ matrix.vpn }}, cv:${{ matrix.client-version }}, sc:${{ matrix.start-connection }}"
 
-    # env:
-    #   PRITUNL_ESTABLISHED_CONNECTION_TIMEOUT: 40 # Example of overriding default wait established connection timeout
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Setup Pritunl Profile
         id: pritunl-connection
-        uses: nathanielvarona/pritunl-client-github-action@main
+        uses: nathanielvarona/pritunl-client-github-action@v1
         with:
           profile-file: ${{ secrets.PRITUNL_PROFILE_FILE }}
           profile-pin: ${{ secrets.PRITUNL_PROFILE_PIN }}
@@ -57,6 +54,8 @@ jobs:
 
       - name: Show VPN Connection Status Manually
         if: ${{ matrix.start-connection == 'false' }}
+        env:
+          PRITUNL_ESTABLISHED_CONNECTION_TIMEOUT: 40
         shell: bash
         run: |
           # Function to print a progress bar
