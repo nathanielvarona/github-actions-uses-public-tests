@@ -1,0 +1,128 @@
+name: Connection Tests - Complete
+
+on:
+  workflow_dispatch:
+
+jobs:
+  connection-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-22.04
+          - ubuntu-20.04
+          - macos-12
+          - macos-11
+          - windows-2022
+          - windows-2019
+        profile-server:
+          - pritunl-dev-1
+          - pritunl-dev-2
+        vpn-mode:
+          - ovpn
+          - wg
+        client-version:
+          - from-package-manager
+          - 1.3.3637.72
+        start-connection:
+          - true
+          - false
+
+    runs-on: ${{ matrix.os }}
+    name: "run:${{ matrix.os }}, ps:${{ matrix.profile-server || 'pritunl-dev-1'  }}, vpn:${{ matrix.vpn-mode }}, cv:${{ matrix.client-version }}, sc:${{ matrix.start-connection }}"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Pritunl Profile
+        id: pritunl-connection
+        uses: nathanielvarona/pritunl-client-github-action@improvement-linking-client-executable-validations-and-shorthand-command-flags
+        with:
+          profile-file: ${{ secrets.PRITUNL_PROFILE_FILE }}
+          profile-pin: ${{ secrets.PRITUNL_PROFILE_PIN }}
+          profile-server: ${{ matrix.profile-server }}
+          vpn-mode: ${{ matrix.vpn-mode }}
+          client-version: ${{ matrix.client-version }}
+          start-connection: ${{ matrix.start-connection }}
+          ready-profile-timeout: '5'
+          established-connection-timeout: '35'
+
+      - if: matrix.start-connection == false
+        name: Starting a VPN Connection Manually
+        shell: bash
+        run: |
+          # Start the VPN Connection Manually
+          pritunl-client start ${{ steps.pritunl-connection.outputs.client-id }} \
+            --password ${{ secrets.PRITUNL_PROFILE_PIN || '' }} \
+            --mode ${{ matrix.vpn-mode }}
+
+      - if: matrix.start-connection == false
+        name: Show VPN Connection Status Manually
+        shell: bash
+        run: |
+          # Show VPN Connection Status Manually
+          sleep 10
+          profile_server=$(
+            profile_list_json=$(pritunl-client list --json)
+            if [[ -n "${{ matrix.profile-server }}" ]]; then
+              echo "$profile_list_json" | jq ".[] | select(.name | contains(\"${{ matrix.profile-server }}\"))"
+            else
+              echo "$profile_list_json" | jq ".[0]"
+            fi
+          )
+          profile_name=$(echo "$profile_server" | jq -r ".name")
+          profile_ip=$(echo "$profile_server" | jq -r ".client_address")
+          echo "Connected as '$profile_name' with a private client address of '$profile_ip'."
+
+      - name: Install IP Tooling (IP Calculator)
+        shell: bash
+        run: |
+          # Install IP Calculator
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt-get install -qq --assume-yes ipcalc
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            brew install --quiet ipcalc
+          elif [ "$RUNNER_OS" == "Windows" ]; then
+            # Retry up to 3 times in case of failure
+            for attempt in $(seq 3); do
+              if curl -sSL "https://raw.githubusercontent.com/kjokjo/ipcalc/0.51/ipcalc" \
+                -o $HOME/bin/ipcalc && chmod +x $HOME/bin/ipcalc; then
+                break
+              else
+                echo "Attempt $attempt failed. Retrying..." && sleep 1
+                # If all retries fail, exit with an error
+                if [ $attempt -eq 3 ]; then
+                  echo "Failed to install ipcalc after 3 attempts." && exit 1
+                fi
+              fi
+            done
+          fi
+          # Validate the IP Calculator Installation
+          echo "ipcalc version $(ipcalc --version)"
+
+      - name: VPN Gateway Reachability Test
+        shell: bash
+        run: |
+          # VPN Gateway Reachability Test
+          profile_server=$(
+            profile_list_json=$(pritunl-client list --json)
+            if [[ -n "${{ matrix.profile-server }}" ]]; then
+              echo "$profile_list_json" | jq ".[] | select(.name | contains(\"${{ matrix.profile-server }}\"))"
+            else
+              echo "$profile_list_json" | jq ".[0]"
+            fi
+          )
+          profile_ip=$(echo "$profile_server" | jq -r ".client_address")
+          vpn_gateway="$(ipcalc $profile_ip | awk 'NR==6{print $2}')"
+          ping_flags="$([[ "$RUNNER_OS" == "Windows" ]] && echo "-n 10" || echo "-c 10")"
+
+          # Ping VPN Gateway
+          ping $vpn_gateway $ping_flags
+
+      - if: matrix.start-connection == false
+        name: Stop VPN Connection Manually
+        shell: bash
+        run: |
+          # Stop Connection Manually
+          pritunl-client stop ${{ steps.pritunl-connection.outputs.client-id }}
