@@ -37,7 +37,7 @@ jobs:
 
       - name: Setup Pritunl Profile
         id: pritunl-connection
-        uses: nathanielvarona/pritunl-client-github-action@improvement-linking-client-executable-validations-and-shorthand-command-flags
+        uses: nathanielvarona/pritunl-client-github-action@main
         with:
           profile-file: ${{ secrets.PRITUNL_PROFILE_FILE }}
           profile-pin: ${{ secrets.PRITUNL_PROFILE_PIN }}
