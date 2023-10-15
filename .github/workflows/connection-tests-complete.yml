@@ -29,7 +29,7 @@ jobs:
           - false
 
     runs-on: ${{ matrix.os }}
-    name: "run:${{ matrix.os }}, ps:${{ matrix.profile-server || 'pritunl-dev-1'  }}, vpn:${{ matrix.vpn-mode }}, cv:${{ matrix.client-version }}, sc:${{ matrix.start-connection }}"
+    name: "run:${{ matrix.os }}, ps:${{ matrix.profile-server }}, vpn:${{ matrix.vpn-mode }}, cv:${{ matrix.client-version }}, sc:${{ matrix.start-connection }}"
 
     steps:
       - name: Checkout
@@ -37,7 +37,7 @@ jobs:
 
       - name: Setup Pritunl Profile
         id: pritunl-connection
-        uses: nathanielvarona/pritunl-client-github-action@main # Use `nathanielvarona/pritunl-client-github-action@v1` for your GitHub Action workflow.
+        uses: nathanielvarona/pritunl-client-github-action@improvement-validate-base64-and-load-profile-on-the-fly # Use `nathanielvarona/pritunl-client-github-action@v1` for your GitHub Action workflow.
         with:
           profile-file: ${{ secrets.PRITUNL_PROFILE_FILE }}
           profile-pin: ${{ secrets.PRITUNL_PROFILE_PIN }}
