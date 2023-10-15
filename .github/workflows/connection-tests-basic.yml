@@ -22,7 +22,7 @@ jobs:
 
       - name: Setup Pritunl Profile
         id: pritunl-connection
-        uses: nathanielvarona/pritunl-client-github-action@improvement-validate-base64-and-load-profile-on-the-fly # Use `nathanielvarona/pritunl-client-github-action@v1` for your GitHub Action workflow.
+        uses: nathanielvarona/pritunl-client-github-action@improvement-dry-executable-bin-directory-linking # Use `nathanielvarona/pritunl-client-github-action@v1` for your GitHub Action workflow.
         with:
           profile-file: ${{ secrets.PRITUNL_PROFILE_FILE_BASIC }}
 
