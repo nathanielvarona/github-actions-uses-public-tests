@@ -22,7 +22,7 @@ jobs:
 
       - name: Setup Pritunl Profile
         id: pritunl-connection
-        uses: nathanielvarona/pritunl-client-github-action@improvement-dry-direct-access-to-inputs # Use `nathanielvarona/pritunl-client-github-action@v1` for your GitHub Action workflow.
+        uses: nathanielvarona/pritunl-client-github-action@improvement-remove-redundant-os-validation # Use `nathanielvarona/pritunl-client-github-action@v1` for your GitHub Action workflow.
         with:
           profile-file: ${{ secrets.PRITUNL_PROFILE_FILE_BASIC }}
 
