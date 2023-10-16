@@ -64,7 +64,7 @@ jobs:
           # Show VPN Connection Status Manually
           sleep 10
           profile_server=$(
-            profile_list_json=$(pritunl-client list --json)
+            profile_list_json=$(pritunl-client list -j | jq ". | sort_by(.name)")
             if [[ -n "${{ matrix.profile-server }}" ]]; then
               echo "$profile_list_json" | jq ".[] | select(.name | contains(\"${{ matrix.profile-server }}\"))"
             else
