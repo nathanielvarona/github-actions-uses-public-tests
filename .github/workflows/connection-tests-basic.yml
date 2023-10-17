@@ -31,7 +31,7 @@ jobs:
         uses: nathanielvarona/pritunl-client-github-action@improvement-dependencies-installation-orders-and-removal-of-installation-file # Use `nathanielvarona/pritunl-client-github-action@v1` for your GitHub Action workflow.
         with:
           profile-file: ${{ secrets.PRITUNL_PROFILE_FILE_BASIC }}
-          vpn-mode: 
+          vpn-mode: ${{ matrix.vpn-mode }}
 
       - name: Install IP Tooling (IP Calculator)
         shell: bash
