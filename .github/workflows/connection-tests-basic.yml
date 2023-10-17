@@ -32,6 +32,7 @@ jobs:
         with:
           profile-file: ${{ secrets.PRITUNL_PROFILE_FILE_BASIC }}
           vpn-mode: ${{ matrix.vpn-mode }}
+          client-version: ${{ matrix.client-version }}
 
       - name: Install IP Tooling (IP Calculator)
         shell: bash
