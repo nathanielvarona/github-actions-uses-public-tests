@@ -12,6 +12,12 @@ jobs:
           - ubuntu-latest
           - macos-latest
           - windows-latest
+        vpn-mode:
+          - ovpn
+          - wg
+        client-version:
+          - from-package-manager
+          - 1.3.3637.72
 
     runs-on: ${{ matrix.os }}
     name: "run:${{ matrix.os }}"
@@ -22,9 +28,10 @@ jobs:
 
       - name: Setup Pritunl Profile
         id: pritunl-connection
-        uses: nathanielvarona/pritunl-client-github-action@automation-fixed-listing-order-for-profile-server-tests # Use `nathanielvarona/pritunl-client-github-action@v1` for your GitHub Action workflow.
+        uses: nathanielvarona/pritunl-client-github-action@improvement-dependencies-installation-orders-and-removal-of-installation-file # Use `nathanielvarona/pritunl-client-github-action@v1` for your GitHub Action workflow.
         with:
           profile-file: ${{ secrets.PRITUNL_PROFILE_FILE_BASIC }}
+          vpn-mode: 
 
       - name: Install IP Tooling (IP Calculator)
         shell: bash
