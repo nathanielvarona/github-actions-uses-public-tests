@@ -6,14 +6,14 @@ SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 # Print the full path of the script directory
 echo "The full path of the script is: $SCRIPT_DIR"
 
-# Access the profile-server input as a JSON-encoded string
-profile_server_input="${{ inputs.profile-server }}"
+# # Access the profile-server input as a JSON-encoded string
+# profile_server_input="${{ inputs.profile-server }}"
 
-echo "###"
-echo "Passing Inputs..."
-echo "####"
-echo $profile_server_input
-echo "#####"
+# echo "###"
+# echo "Passing Inputs..."
+# echo "####"
+# echo $profile_server_input
+# echo "#####"
 
 # # Check if the input is JSON-encoded, a single string, or a YAML array
 # if [[ "$profile_server_input" == \[* ]]; then
