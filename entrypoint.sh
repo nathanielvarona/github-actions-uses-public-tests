@@ -1,25 +1,22 @@
 #!/bin/sh
 
-PRITUNL_PROFILE_FILE="${PRITUNL_PROFILE_FILE:-}"
+# PRITUNL_PROFILE_SERVER="quality-assurance, sales-marketing, research-development"
+# PRITUNL_PROFILE_SERVER="quality-assurance"
+
+# PRITUNL_PROFILE_FILE="${PRITUNL_PROFILE_FILE:-}"
 PRITUNL_PROFILE_SERVER="${PRITUNL_PROFILE_SERVER:-}"
 
-# Access the profile-server input as a JSON-encoded string
-server_names="$PRITUNL_PROFILE_SERVER"
+echo $PRITUNL_PROFILE_SERVER
 
-echo "###"
-echo "Passing Inputs..."
-echo "####"
-echo $server_names
-echo "#####"
+IFS=', ' read -r -a profile_server <<< "$PRITUNL_PROFILE_SERVER"
 
+if ! [[ "${#profile_server[@]}" -eq 0 ]]; then
 
-# Split the single string into an array if it contains commas
-IFS=',' read -r -a server_names <<< "$server_names"
+  for server in "${profile_server[@]}"; do
+      echo "$server"
+  done
 
-# Loop through the server names
-for server_name in "${server_names[@]}"
-do
-  # Use the server name in your script
-  echo "Connecting to server: $server_name"
-  # Add your Pritunl connection logic here
-done
+else
+  echo "No Profile Server!"
+
+fi
