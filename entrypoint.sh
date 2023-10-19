@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Get the directory of the currently executing script
-SCRIPT_PATH=$(realpath "$0")
+SCRIPT_PATH=$($GITHUB_ACTION_PATH$([[ "$RUNNER_OS" == "Windows" ]] && echo '\\' || echo '/')entrypoint.sh)
 
 # Print the full path of the script directory
 echo "The full path of the script is: $SCRIPT_DIR"
