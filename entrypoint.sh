@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Get the directory of the currently executing script
-SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
+SCRIPT_DIR=$(dirname "$(readlink -f "$1")")
 
 # Print the full path of the script directory
 echo "The full path of the script is: $SCRIPT_DIR"
