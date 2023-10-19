@@ -1,0 +1,19 @@
+name: 'Setup Pritunl Profile and Start VPN Connection'
+description: 'Setup Pritunl Profile and Start VPN Connection'
+
+inputs:
+  profile-file:
+    description: 'The path to the Pritunl profile file'
+    required: true
+  profile-server:
+    description: 'List of Pritunl server names'
+    required: true
+    default: ''
+
+runs:
+  using: 'composite'
+  steps:
+    - shell: bash
+      run: |
+        # Executing 'entrypoint.sh'
+        $GITHUB_ACTION_PATH$([[ "$RUNNER_OS" == "Windows" ]] && echo '\\' || echo '/')entrypoint.sh
