@@ -30,4 +30,4 @@ jobs:
           #   - quality-assurance
           #   - sales-marketing
           #   - research-development
-          profile-server: ('quality-assurance', 'sales-marketing', 'research-development')
+          profile-server: 'quality-assurance, sales-marketing, research-development'
