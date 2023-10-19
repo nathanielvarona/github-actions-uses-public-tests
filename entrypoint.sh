@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/usr/bin/env bash
+
+which bash
 
 PRITUNL_PROFILE_SERVER="quality-assurance, sales-marketing, research-development"
 # PRITUNL_PROFILE_SERVER="quality-assurance"
@@ -10,9 +12,9 @@ echo $PRITUNL_PROFILE_SERVER
 
 profile_server=($(echo "$PRITUNL_PROFILE_SERVER" | tr ', ' ' '))
 
-echo $profile_server
-
 # IFS=', ' read -r -a profile_server <<< "$PRITUNL_PROFILE_SERVER"
+
+echo $profile_server
 
 echo '####'
 
