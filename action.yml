@@ -14,6 +14,9 @@ runs:
   using: 'composite'
   steps:
     - shell: bash
+      env:
+        PRITUNL_PROFILE_FILE: ${{ inputs.profile-file }}
+        PRITUNL_PROFILE_SERVER: ${{ inputs.profile-server }}
       run: |
         # Executing 'entrypoint.sh'
         $GITHUB_ACTION_PATH$([[ "$RUNNER_OS" == "Windows" ]] && echo '\\' || echo '/')entrypoint.sh
