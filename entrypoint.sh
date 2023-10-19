@@ -14,7 +14,7 @@ echo "#####"
 
 
 # Split the single string into an array if it contains commas
-IFS=',' read -ra server_names <<< "$server_names"
+IFS=',' read -r -a server_names <<< "$server_names"
 
 # Loop through the server names
 for server_name in "${server_names[@]}"
