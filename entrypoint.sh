@@ -1,10 +1,17 @@
 #!/bin/sh
 
 # Get the directory of the currently executing script
-SCRIPT_PATH="$GITHUB_ACTION_PATH$([[ "$RUNNER_OS" == "Windows" ]] && echo '\\' || echo '/')entrypoint.sh
+SCRIPT_PATH="$GITHUB_ACTION_PATH$([[ "$RUNNER_OS" == "Windows" ]] && echo '\\' || echo '/')entrypoint.sh"
 
 # Print the full path of the script directory
 echo "The full path of the script is: $SCRIPT_PATH"
+
+
+# Get the full path of the script file
+SCRIPT_PATH2=$(realpath "$0")
+
+# Print the full path of the script file
+echo "The full path 2 of the script is: $SCRIPT_PATH2"
 
 # # Access the profile-server input as a JSON-encoded string
 # profile_server_input="${{ inputs.profile-server }}"
