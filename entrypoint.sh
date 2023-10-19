@@ -4,7 +4,7 @@
 SCRIPT_PATH="$GITHUB_ACTION_PATH"
 
 # Print the full path of the script directory
-echo "The full path of the script is: $SCRIPT_DIR"
+echo "The full path of the script is: $SCRIPT_PATH"
 
 # # Access the profile-server input as a JSON-encoded string
 # profile_server_input="${{ inputs.profile-server }}"
