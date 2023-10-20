@@ -30,4 +30,4 @@ jobs:
           # profile-server: pritunl-dev-1, pritunl-dev-2
           # profile-server: pritunl-dev-1, pritunl-dev-2, pritunl-dev-3
           # profile-server: pritunl.profile.3 (pritunl-dev-1)
-          profile-server: pritunl.profile.1 (pritunl-dev-1), pritunl.profile.1 (pritunl-dev-2)
+          profile-server: pritunl.profile.3 (pritunl-dev-1), pritunl.profile.3 (pritunl-dev-2)
