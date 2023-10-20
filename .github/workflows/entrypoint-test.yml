@@ -23,5 +23,6 @@ jobs:
       - name: Setup Pritunl Profile
         uses: ./
         with:
-          profile-file: ${{ secrets.PRITUNL_PROFILE_FILE_BASIC }}
+          profile-file: ${{ secrets.PRITUNL_PROFILE_FILE_MULTI_SERVER }}
           # profile-server: 'quality-assurance, sales-marketing, research-development'
+          # profile-server:
