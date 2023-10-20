@@ -27,4 +27,5 @@ jobs:
           # profile-server: 'quality-assurance, sales-marketing, research-development'
           # profile-server: all-profile-server
           # profile-server: pritunl-dev-1
-          profile-server: pritunl-dev-1, pritunl-dev-2
+          # profile-server: pritunl-dev-1, pritunl-dev-2
+          profile-server: pritunl-dev-1, pritunl-dev-2, pritunl-dev-3
