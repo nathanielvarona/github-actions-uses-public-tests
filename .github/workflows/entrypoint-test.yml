@@ -25,4 +25,4 @@ jobs:
         with:
           profile-file: ${{ secrets.PRITUNL_PROFILE_FILE_MULTI_SERVER }}
           # profile-server: 'quality-assurance, sales-marketing, research-development'
-          # profile-server:
+          profile-server: all-profile-server

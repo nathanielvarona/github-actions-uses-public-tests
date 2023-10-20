@@ -97,4 +97,4 @@ fetch_profile_server() {
   echo "$profile_server_json" | jq -c -M
 }
 
-echo $(fetch_profile_server | jq)
+echo $(fetch_profile_server) | jq
