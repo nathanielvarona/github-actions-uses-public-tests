@@ -10,18 +10,18 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macos-latest
-          - windows-latest
+          # - macos-latest
+          # - windows-latest
         profile-server:
-          - pritunl-dev-2
-          - pritunl-dev-1, pritunl-dev-2
+          # - pritunl-dev-2
+          # - pritunl-dev-1, pritunl-dev-2
           - pritunl.profile.3 (pritunl-dev-1), pritunl.profile.3 (pritunl-dev-2)
         vpn-mode:
           - ovpn
           # - wg
         client-version:
-          # - from-package-manager
-          - 1.3.3637.72
+          - from-package-manager
+          # - 1.3.3637.72
 
     runs-on: ${{ matrix.os }}
     name: "run:${{ matrix.os }}"
@@ -39,38 +39,52 @@ jobs:
           vpn-mode: ${{ matrix.vpn-mode }}
           client-version: ${{ matrix.client-version }}
 
-      # - name: Install IP Tooling (IP Calculator)
-      #   shell: bash
-      #   run: |
-      #     # Install IP Calculator
-      #     if [ "$RUNNER_OS" == "Linux" ]; then
-      #       sudo apt-get install -qq -y ipcalc
-      #     elif [ "$RUNNER_OS" == "macOS" ]; then
-      #       brew install -q ipcalc
-      #     elif [ "$RUNNER_OS" == "Windows" ]; then
-      #       # Retry up to 3 times in case of failure
-      #       for attempt in $(seq 3); do
-      #         if curl -sSL "https://raw.githubusercontent.com/kjokjo/ipcalc/0.51/ipcalc" \
-      #           -o $HOME/bin/ipcalc && chmod +x $HOME/bin/ipcalc; then
-      #           break
-      #         else
-      #           echo "Attempt $attempt failed. Retrying..." && sleep 1
-      #           # If all retries fail, exit with an error
-      #           if [ $attempt -eq 3 ]; then
-      #             echo "Failed to install ipcalc after 3 attempts." && exit 1
-      #           fi
-      #         fi
-      #       done
-      #     fi
-      #     # Validate the IP Calculator Installation
-      #     echo "ipcalc version $(ipcalc --version)"
+      - name: Install IP Tooling (IP Calculator)
+        shell: bash
+        run: |
+          # Install IP Calculator
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt-get install -qq -y ipcalc
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            brew install -q ipcalc
+          elif [ "$RUNNER_OS" == "Windows" ]; then
+            # Retry up to 3 times in case of failure
+            for attempt in $(seq 3); do
+              if curl -sSL "https://raw.githubusercontent.com/kjokjo/ipcalc/0.51/ipcalc" \
+                -o $HOME/bin/ipcalc && chmod +x $HOME/bin/ipcalc; then
+                break
+              else
+                echo "Attempt $attempt failed. Retrying..." && sleep 1
+                # If all retries fail, exit with an error
+                if [ $attempt -eq 3 ]; then
+                  echo "Failed to install ipcalc after 3 attempts." && exit 1
+                fi
+              fi
+            done
+          fi
+          # Validate the IP Calculator Installation
+          echo "ipcalc version $(ipcalc --version)"
 
-      # - name:  VPN Gateway Reachability Test
-      #   shell: bash
-      #   run: |
-      #     # VPN Gateway Reachability Test
-      #     profile_ip=$(pritunl-client list -j | jq ". | sort_by(.name)" | jq ".[0]" | jq -r ".client_address")
-      #     vpn_gateway="$(ipcalc $profile_ip | awk 'NR==6{print $2}')"
-      #     ping_flags="$([[ "$RUNNER_OS" == "Windows" ]] && echo "-n 10" || echo "-c 10")"
-      #     # Ping VPN Gateway
-      #     ping $vpn_gateway $ping_flags
+      - name:  VPN Gateway Reachability Test
+        shell: bash
+        run: |
+          # VPN Gateway Reachability Test
+
+          profile_server_array=()
+
+          while read -r line; do
+            profile_server_array+=("$line")
+          done < <(echo "${{ steps.pritunl-connection.outputs.client-id }}" | jq -c '.[]')
+
+          for profile_server_item in "${profile_server_array[@]}"; do
+
+            profile_ip="$(echo "$profile_server_item" | jq -r ".client_address")"
+
+            vpn_gateway="$(ipcalc $profile_ip | awk 'NR==6{print $2}')"
+            ping_flags="$([[ "$RUNNER_OS" == "Windows" ]] && echo "-n 10" || echo "-c 10")"
+
+            # Ping VPN Gateway
+            ping $vpn_gateway $ping_flags
+
+            sleep 1
+          done
