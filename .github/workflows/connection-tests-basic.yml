@@ -12,6 +12,10 @@ jobs:
           - ubuntu-latest
           - macos-latest
           - windows-latest
+        profile-server:
+          - pritunl-dev-2
+          - pritunl-dev-1, pritunl-dev-2
+          - pritunl.profile.3 (pritunl-dev-1), pritunl.profile.3 (pritunl-dev-2)
         vpn-mode:
           - ovpn
           # - wg
@@ -31,9 +35,9 @@ jobs:
         uses: nathanielvarona/pritunl-client-github-action@feature-profile-multiple-servers-connection # Use `nathanielvarona/pritunl-client-github-action@v1` for your GitHub Action workflow.
         with:
           profile-file: ${{ secrets.PRITUNL_PROFILE_FILE_MULTI_SERVER }}
+          profile-server: ${{ matrix.profile-server }}
           vpn-mode: ${{ matrix.vpn-mode }}
           client-version: ${{ matrix.client-version }}
-          profile-server: pritunl-dev-1, pritunl-dev-2
 
       # - name: Install IP Tooling (IP Calculator)
       #   shell: bash
