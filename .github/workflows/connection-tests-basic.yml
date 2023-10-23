@@ -71,7 +71,7 @@ jobs:
           # VPN Gateway Reachability Test
 
           profile_server_array=()
-          profile_server="${{ steps.pritunl-connection.outputs.client-id }}"
+          profile_server='${{ steps.pritunl-connection.outputs.client-id }}'
 
           while read -r line; do
             profile_server_array+=("$line")
@@ -79,15 +79,16 @@ jobs:
 
           for profile_server_item in "${profile_server_array[@]}"; do
 
-            echo "$(echo "$profile_server_item" | jq -r ".id")"
+            echo "Pinging '$(echo "$profile_server_item" | jq -r ".name")' VPN Gateway."
 
-            # profile_ip="$(echo "$profile_server_item" | jq -r ".client_address")"
+            profile_id="$(echo "$profile_server_item" | jq -r ".id")"
+            profile_ip="$(pritunl-client list -j | jq '.[] | select(.id == "$profile_id")' | jq -r '.client_address')"
 
-            # vpn_gateway="$(ipcalc $profile_ip | awk 'NR==6{print $2}')"
-            # ping_flags="$([[ "$RUNNER_OS" == "Windows" ]] && echo "-n 10" || echo "-c 10")"
+            vpn_gateway="$(ipcalc $profile_ip | awk 'NR==6{print $2}')"
+            ping_flags="$([[ "$RUNNER_OS" == "Windows" ]] && echo "-n 10" || echo "-c 10")"
 
-            # # Ping VPN Gateway
-            # ping $vpn_gateway $ping_flags
+            # Ping VPN Gateway
+            ping $vpn_gateway $ping_flags
 
             sleep 1
           done
