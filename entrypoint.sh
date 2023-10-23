@@ -7,11 +7,11 @@
 
 # PRITUNL_PROFILE_SERVER="pritunl-dev-1"
 # PRITUNL_PROFILE_SERVER="pritunl-dev-2"
-# PRITUNL_PROFILE_SERVER="pritunl-dev-1, pritunl-dev-2"
+PRITUNL_PROFILE_SERVER="pritunl-dev-1, pritunl-dev-2"
 # PRITUNL_PROFILE_SERVER="pritunl-dev-1, pritunl-dev-2, pritunl-dev-3"
 # PRITUNL_PROFILE_SERVER="pritunl-dev-3"
 
-# # PRITUNL_PROFILE_SERVER="pritunl.profile.1 (pritunl-dev-1)"
+# PRITUNL_PROFILE_SERVER="pritunl.profile.1 (pritunl-dev-1)"
 # PRITUNL_PROFILE_SERVER="pritunl.profile.1 (pritunl-dev-2)"
 # PRITUNL_PROFILE_SERVER="pritunl.profile.1 (pritunl-dev-1), pritunl.profile.1 (pritunl-dev-2)"
 # PRITUNL_PROFILE_SERVER="pritunl.profile.1 (pritunl-dev-1), pritunl.profile.1 (pritunl-dev-2), pritunl.profile.1 (pritunl-dev-3)"
@@ -19,22 +19,22 @@
 PRITUNL_PROFILE_FILE="${PRITUNL_PROFILE_FILE:-}"
 PRITUNL_PROFILE_SERVER="${PRITUNL_PROFILE_SERVER:-}"
 
-echo "deb https://repo.pritunl.com/stable/apt $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/pritunl.list
-gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 7568D9BB55FF9E5287D586017AE645C0CF8E292A > /dev/null 2>&1
-gpg --armor --export 7568D9BB55FF9E5287D586017AE645C0CF8E292A | sudo tee /etc/apt/trusted.gpg.d/pritunl.asc > /dev/null
-sudo apt-get update -qq -y
-sudo apt-get install -qq -y net-tools iptables openvpn resolvconf
-sudo apt-get install -qq -y pritunl-client
+# echo "deb https://repo.pritunl.com/stable/apt $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/pritunl.list
+# gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 7568D9BB55FF9E5287D586017AE645C0CF8E292A > /dev/null 2>&1
+# gpg --armor --export 7568D9BB55FF9E5287D586017AE645C0CF8E292A | sudo tee /etc/apt/trusted.gpg.d/pritunl.asc > /dev/null
+# sudo apt-get update -qq -y
+# sudo apt-get install -qq -y net-tools iptables openvpn resolvconf
+# sudo apt-get install -qq -y pritunl-client
 
-sleep 2
+# sleep 2
 
-# Hard way for testing
-profile_base64="$PRITUNL_PROFILE_FILE"
-profile_file="$RUNNER_TEMP/profile-file.tar"
-echo "$profile_base64" | base64 -d > "$profile_file"
-pritunl-client add "$profile_file"
+# # Hard way for testing
+# profile_base64="$PRITUNL_PROFILE_FILE"
+# profile_file="$RUNNER_TEMP/profile-file.tar"
+# echo "$profile_base64" | base64 -d > "$profile_file"
+# pritunl-client add "$profile_file"
 
-sleep 3
+# sleep 3
 
 fetch_profile_server() {
   local profile_list_json
