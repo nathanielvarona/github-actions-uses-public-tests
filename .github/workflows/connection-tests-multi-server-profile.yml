@@ -1,4 +1,4 @@
-name: Connection Tests - Basic
+name: Connection Tests - Multi Server Profile
 
 on:
   workflow_dispatch:
@@ -12,9 +12,12 @@ jobs:
           - ubuntu-latest
           - macos-latest
           - windows-latest
+        profile-server:
+          - pritunl-dev-2
+          - pritunl-dev-1, pritunl-dev-2
 
     runs-on: ${{ matrix.os }}
-    name: "run:${{ matrix.os }}"
+    name: "run:${{ matrix.os }}, ps:'${{ matrix.profile-server }}'"
 
     steps:
       - name: Checkout
@@ -24,7 +27,8 @@ jobs:
         id: pritunl-connection
         uses: nathanielvarona/pritunl-client-github-action@main # Use `nathanielvarona/pritunl-client-github-action@v1` for your GitHub Action workflow
         with:
-          profile-file: ${{ secrets.PRITUNL_PROFILE_FILE_BASIC }}
+          profile-file: ${{ secrets.PRITUNL_PROFILE_FILE_MULTI_SERVER }}
+          profile-server: ${{ matrix.profile-server }}
 
       - name: Install IP Tooling (IP Calculator)
         shell: bash
@@ -59,10 +63,26 @@ jobs:
         run: |
           # VPN Gateway Reachability Test
 
-          profile_ip=$(pritunl-client list -j | jq ". | sort_by(.name)" | jq ".[0]" | jq -r ".client_address")
+          ping_count_number=5
+          profile_server_ids_json='${{ steps.pritunl-connection.outputs.client-id }}'
+          profile_server_ids_array=()
 
-          vpn_gateway="$(ipcalc $profile_ip | awk 'NR==6{print $2}')"
-          ping_flags="$([[ "$RUNNER_OS" == "Windows" ]] && echo "-n 10" || echo "-c 10")"
+          while read -r line; do
+          profile_server_ids_array+=("$line")
+          done < <(echo "$profile_server_ids_json" | jq -c '.[]')
 
-          # Ping VPN Gateway
-          ping $vpn_gateway $ping_flags
+          for profile_server_item in "${profile_server_ids_array[@]}"; do
+            echo "Pinging '$(echo "$profile_server_item" | jq -r ".name")' Gateway."
+
+            profile_id="$(echo "$profile_server_item" | jq -r ".id")"
+            profile_ip="$(pritunl-client list -j | jq --arg profile_id "$profile_id" '.[] | select(.id == $profile_id)' | jq -r '.client_address')"
+
+            vpn_gateway="$(ipcalc $profile_ip | awk 'NR==6{print $2}')"
+            ping_flags="$([[ "$RUNNER_OS" == "Windows" ]] && echo "-n $ping_count_number" || echo "-c $ping_count_number")"
+
+            # Ping VPN Gateway
+            ping $vpn_gateway $ping_flags
+
+            # Print new line
+            echo -n -e "\n"
+          done
