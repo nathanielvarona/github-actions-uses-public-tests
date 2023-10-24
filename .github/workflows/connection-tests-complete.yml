@@ -37,7 +37,7 @@ jobs:
 
       - name: Setup Pritunl Profile
         id: pritunl-connection
-        uses: nathanielvarona/pritunl-client-github-action@main # Use `nathanielvarona/pritunl-client-github-action@v1` for your GitHub Action workflow
+        uses: nathanielvarona/pritunl-client-github-action@v1 # Use `nathanielvarona/pritunl-client-github-action@v1` for your GitHub Action workflow
         with:
           profile-file: ${{ secrets.PRITUNL_PROFILE_FILE }}
           profile-pin: ${{ secrets.PRITUNL_PROFILE_PIN }}
