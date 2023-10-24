@@ -37,9 +37,7 @@ jobs:
         shell: bash
         run: |
           sleep 10
-          pritunl-client list -j |
-            jq 'sort_by(.name) .[0] | { "Profile Name": .name, "Client Address": .client_address }'
-
+          pritunl-client list -j | jq 'sort_by(.name) | .[0] | { "Profile Name": .name, "Client Address": .client_address }'
 
       - name: Your CI/CD Core Logic
         shell: bash
@@ -73,7 +71,7 @@ jobs:
           echo "ipcalc version $(ipcalc --version)"
 
           # VPN Gateway Reachability Test
-          profile_ip=$(pritunl-client list -j | jq -r '. | sort_by(.name) .[0] .client_address')
+          profile_ip=$(pritunl-client list -j | jq -r 'sort_by(.name) | .[0].client_address')
           vpn_gateway="$(ipcalc $profile_ip | awk 'NR==6{print $2}')"
           ping_flags="$([[ "$RUNNER_OS" == "Windows" ]] && echo "-n 10" || echo "-c 10")"
 
