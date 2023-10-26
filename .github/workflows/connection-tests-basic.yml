@@ -12,6 +12,9 @@ jobs:
           - ubuntu-latest
           - macos-latest
           - windows-latest
+        client-version:
+          - from-package-manager
+          - 1.3.3637.72
 
     runs-on: ${{ matrix.os }}
     name: "run:${{ matrix.os }}"
@@ -22,7 +25,7 @@ jobs:
 
       - name: Setup Pritunl Profile
         id: pritunl-connection
-        uses: nathanielvarona/pritunl-client-github-action@v1 # Use `nathanielvarona/pritunl-client-github-action@v1` for your GitHub Action workflow
+        uses: nathanielvarona/pritunl-client-github-action@improvement-reduce-setup-noisiness # Use `nathanielvarona/pritunl-client-github-action@v1` for your GitHub Action workflow
         with:
           profile-file: ${{ secrets.PRITUNL_PROFILE_FILE_BASIC }}
 
